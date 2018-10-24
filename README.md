@@ -1,5 +1,5 @@
 # Tiny Diagram Editor
 
-Tiny Diagram Editor in HTML5.
+Pure HTML5 JavaScript Diagram / FlowChart Editor with image support and loading and saving functions.
 
 Web: https://tinydiagrameditor.lrusso.com.ar
