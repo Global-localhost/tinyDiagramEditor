@@ -215,7 +215,7 @@ if (userLanguage.substring(0,2)=="es")
 
 	/**Line styles*/
 	BuilderProperty.LINE_STYLES = [
-    	{Text: 'Continous border', Value: 'continuous'},
+    	{Text: 'Continuous border', Value: 'continuous'},
     	{Text: 'Dotted border', Value: 'dotted'},
     	{Text: 'Dashed border',Value: 'dashed'}
 		];
