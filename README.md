@@ -2,4 +2,4 @@
 
 Tiny Diagram Editor in HTML5.
 
-Web: https://lrusso.github.io/TinyDiagramEditor/TinyDiagramEditor.htm
+Web: https://tinydiagrameditor.lrusso.com.ar
