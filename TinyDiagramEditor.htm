@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Tiny Diagram Editor</title>
+		<script src="TinyDiagramEditor.js"></script>
+		<link rel="stylesheet" type="text/css" href="TinyDiagramEditor.css" />
+	</head>
+	<body id="body">
+		<div id="actions">
+			<div class="menubar_holder">
+				<div class="menubar_button_new_enabled" id="buttonNew" onclick="newDiagram();"></div>
+			</div>
+			<div class="menubar_holder">
+				<label for="fileOpener" id="buttonImport">
+					<div class="menubar_button_open_enabled"></div>
+				</label>
+				<input type="file" class="menubar_buttonHidden" id="fileOpener" onChange="openDiagram(document.getElementById('fileOpener').files[0]);">
+			</div>
+			<div class="menubar_holder">
+				<div class="menubar_button_exportdgm_enabled" onclick="exportToDGM();"></div>
+			</div>
+			<div class="menubar_holder">
+				<div class="menubar_button_exportpng_enabled" onclick="exportToPNG();"></div>
+			</div>
+			<div class="menubar_separator"></div>
+			<div class="menubar_holder">
+				<div class="menubar_button_front_disabled" id="buttonFront" onclick="moveFront();"></div>
+			</div>
+			<div class="menubar_holder">
+				<div class="menubar_button_back_disabled" id="buttonBack" onclick="moveBack();"></div>
+			</div>
+			<div class="menubar_separator"></div>
+			<div class="menubar_holder">
+				<div class="menubar_button_copy_disabled" id="buttonCopy" onclick="copyObject();"></div>
+			</div>
+			<div class="menubar_separator"></div>
+			<div class="menubar_holder">
+				<div class="menubar_button_trash_disabled" id="buttonDelete" onclick="deleteObject();"></div>
+			</div>
+		</div>
+
+		<div id="editor">
+			<div id="container">
+				<canvas id="a" width="1920" height="1080">
+					Your browser does not support HTML5. Please upgrade your browser to any modern version.
+				</canvas>
+				<div id="text-editor"></div>
+				<div id="text-editor-tools"></div>
+			</div>
+		</div>
+
+		<div id="right">
+			<div id="figures">
+				<script>
+					function buildPanel()
+						{
+						var firstPanel = true;
+
+						for(var setName in figureSets)
+							{
+							var set = figureSets[setName];
+							var eSetDiv = document.createElement('div');
+							eSetDiv.setAttribute('id', setName);
+							eSetDiv.style.marginBottom = '10px';
+							if(firstPanel)
+								{
+								firstPanel = false;
+								}
+								else
+								{
+								eSetDiv.style.display = 'none';
+								}
+
+							document.getElementById('figures').appendChild(eSetDiv);
+
+							for(var figure in set['figures'])
+								{
+								figure = set['figures'][figure];
+
+								var figureFunctionName = 'figure_' + figure.figureFunction;
+								var figureThumbURL = 'lib/sets/' + setName + '/' + figure.image;
+
+								var eFigure = document.createElement('div');
+								eFigure.className = figure.figureFunction;
+
+								eFigure.addEventListener('mousedown', function (figureFunction, figureThumbURL)
+									{
+									return function(evt)
+										{
+										evt.preventDefault();
+
+										if (figureFunction=="figure_Arrow")
+											{
+											insertArrow();
+											}
+											else
+											{
+											var myContainer = document.getElementById('container');
+											var myMiddleX = (myContainer.offsetWidth / 2) - 20 + myContainer.scrollLeft;
+											var myMiddleY = (myContainer.offsetHeight / 2) - 20 + myContainer.scrollTop;
+
+											var cmdCreateFig = new FigureCreateCommand(window[figureFunction], myMiddleX, myMiddleY);
+											cmdCreateFig.execute();
+											History.addUndo(cmdCreateFig);
+
+											selectedConnectorId = -1;
+
+											createFigureFunction = null;
+
+											mousePressed = false;
+											redraw = true;
+
+											state = STATE_FIGURE_SELECTED;
+
+											draw();
+
+											document.getElementById("buttonFront").classList.add("menubar_button_front_enabled");
+											document.getElementById("buttonFront").classList.remove("menubar_button_front_disabled");
+											document.getElementById("buttonBack").classList.add("menubar_button_back_enabled");
+											document.getElementById("buttonBack").classList.remove("menubar_button_back_disabled");
+											document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+											document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+											document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
+											document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+											}
+										};
+									} (figureFunctionName, figureThumbURL), false);
+
+								eSetDiv.appendChild(eFigure);
+								}
+							}
+						}
+					buildPanel();
+				</script>
+			</div>
+
+			<hr/>
+
+			<div id="minimap"></div>
+
+			<div class="label">
+				<div class="label2" id="labelWidth">&nbsp;</div>
+				<div class="label3"><input class="labeltext" type="text" id="widthSize" onkeydown="resizeCanvasTextBoxes(event)"></div>
+			</div>
+
+			<div class="label">
+				<div class="label2" id="labelHeight">&nbsp;</div>
+				<div class="label3"><input class="labeltext" type="text" id="heightSize" onkeydown="resizeCanvasTextBoxes(event)"></div>
+			</div>
+
+			<input class="labelsubmit" id="sumbitSize" type="button" value="" onclick="resizeCanvas()">
+
+			<hr/>
+
+			<div id="edit"></div>
+
+		</div>
+
+		<script>
+			var userLanguage = window.navigator.userLanguage || window.navigator.language;
+
+			var STRING_WIDTH = "";
+			var STRING_HEIGHT = "";
+			var STRING_UPDATE = "";
+			var STRING_CHANGEIMAGE = "";
+			var STRING_CHANGEIMAGE_ERROR = "";
+			var STRING_TEXT = "";
+			var STRING_BACKGROUND_COLOR = "";
+			var STRING_BORDER_COLOR = "";
+			var STRING_BORDER_WIDTH = "";
+			var STRING_BORDER_STYLE = "";
+			var STRING_BORDER_CONTINOUS = "";
+			var STRING_BORDER_DOTTED = "";
+			var STRING_BORDER_DASHED = "";
+			var STRING_ERROR_LOSECHANGES = "";
+			var STRING_ERROR_FORMAT = "";
+			var STRING_DELETE_WARNING = "";
+
+			if (userLanguage.substring(0,2)=="es")
+				{
+				STRING_WIDTH = "Ancho (px):";
+				STRING_HEIGHT = "Alto (px):";
+				STRING_UPDATE = "Actualizar tama\u00F1o";
+				STRING_CHANGEIMAGE = "Cambiar imagen";
+				STRING_CHANGEIMAGE_ERROR = "El archivo debe estar en formato JPG o PNG.";
+				STRING_TEXT = "Texto";
+				STRING_BACKGROUND_COLOR = "Color del fondo:";
+				STRING_BORDER_COLOR = "Color del borde:";
+				STRING_BORDER_WIDTH = "Ancho del borde:";
+				STRING_BORDER_STYLE = "Estilo del borde:";
+				STRING_BORDER_CONTINOUS = "Continuo";
+				STRING_BORDER_DOTTED = "Punteado";
+				STRING_BORDER_DASHED = "Intermitente";
+				STRING_ERROR_LOSECHANGES = "\u00BFPerder cualquier cambio no guardado?";
+				STRING_ERROR_FORMAT = "ERROR: Por favor verifique que el archivo se encuentre en formato DGM.";
+				STRING_DELETE_WARNING = "\u00BFDesea eliminar la figura seleccionada?";
+				}
+				else
+				{
+				STRING_WIDTH = "Width (px):";
+				STRING_HEIGHT = "Height (px):";
+				STRING_UPDATE = "Update size";
+				STRING_CHANGEIMAGE = "Change image";
+				STRING_CHANGEIMAGE_ERROR = "The file must be in JPG or PNG format.";
+				STRING_TEXT = "Text";
+				STRING_BACKGROUND_COLOR = "Background color:";
+				STRING_BORDER_COLOR = "Border color:";
+				STRING_BORDER_WIDTH = "Border width:";
+				STRING_BORDER_STYLE = "Border style:";
+				STRING_BORDER_CONTINOUS = "Continous";
+				STRING_BORDER_DOTTED = "Dotted";
+				STRING_BORDER_DASHED = "Dashed";
+				STRING_ERROR_LOSECHANGES = "Lose any unsaved changes?";
+				STRING_ERROR_FORMAT = "ERROR: Please check that the file is in DGM format.";
+				STRING_DELETE_WARNING = "Delete the selected figure?";
+				}
+
+			document.getElementById('labelWidth').innerHTML = STRING_WIDTH;
+			document.getElementById('labelHeight').innerHTML = STRING_HEIGHT;
+			document.getElementById('sumbitSize').value = STRING_UPDATE;
+
+			window.onload = function()
+				{
+				var appURL = '.';
+				var figureSetsURL = appURL + '/editor/lib/sets';
+				var insertImageURL = appURL + '/editor/data/import/';
+
+				var myDiv = document.getElementById('container');
+				myDiv.scrollTop = 0;
+				myDiv.scrollLeft = 0;
+
+				init('');
+
+				var myCanvas = document.getElementById('a');
+				var inputWidth = document.getElementById('widthSize');
+				var inputHeight = document.getElementById('heightSize');
+				inputWidth.value = myCanvas.width;
+				inputHeight.value = myCanvas.height;
+				}
+
+			function newDiagram()
+				{
+				var message = confirm(STRING_ERROR_LOSECHANGES);
+				if (message == true)
+					{
+					newDiagramFile();
+					var myCanvas = document.getElementById('a');
+					var inputWidth = document.getElementById('widthSize');
+					var inputHeight = document.getElementById('heightSize');
+					inputWidth.value = myCanvas.width;
+					inputHeight.value = myCanvas.height;
+					}
+				}
+
+			function openDiagram(file)
+				{
+				var filename = file.name;
+				var extension = filename.split(".").pop().toLowerCase();
+				var reader = new FileReader();
+
+				if (extension=="dgm")
+					{
+					try
+						{
+						reader.readAsText(file);
+
+						reader.addEventListener("load", function (event)
+							{
+							var contents = event.target.result;
+							loadDiagramFile(contents);
+
+							var myCanvas = document.getElementById('a');
+							var inputWidth = document.getElementById('widthSize');
+							var inputHeight = document.getElementById('heightSize');
+							inputWidth.value = myCanvas.width;
+							inputHeight.value = myCanvas.height;
+							});
+						}
+						catch(err)
+						{
+						alert(STRING_ERROR_FORMAT);
+						}
+					}
+					else
+					{
+					alert(STRING_ERROR_FORMAT);
+					}
+				}
+
+			function exportToDGM()
+				{
+  				createFigureFunction = null;
+
+				//deselect any figure
+				selectedFigureId = -1;
+				selectedConnectionPointId = -1;
+				selectedConnectorId = -1;
+
+				// clear current text editor
+				if (currentTextEditor!=null)
+					{
+					currentTextEditor.destroy();
+					currentTextEditor = null;
+					}
+
+				state = STATE_NONE;
+
+				setUpEditPanel(null)
+
+				draw();
+
+				var diagram = { c: canvasProps, s:STACK, m:CONNECTOR_MANAGER, p:CONTAINER_MANAGER, v: DIAGRAMO.fileVersion };
+				var serializedDiagram = JSON.stringify(diagram);
+				var link = document.createElement("a");
+				link.style.display = "none";
+				document.body.appendChild(link);
+				link.href = URL.createObjectURL(new Blob([serializedDiagram], {type:"text/plain"}));
+				link.download = "Diagram.dgm";
+				link.click();
+
+				document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+				document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+				document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+				document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+				document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
+				document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
+				document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
+				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+				}
+
+			function exportToPNG()
+				{
+				createFigureFunction = null;
+
+				//deselect any figure
+				selectedFigureId = -1;
+				selectedConnectionPointId = -1;
+				selectedConnectorId = -1;
+
+				// clear current text editor
+				if (currentTextEditor!=null)
+					{
+					currentTextEditor.destroy();
+					currentTextEditor = null;
+					}
+
+				state = STATE_NONE;
+
+				setUpEditPanel(null)
+
+				draw();
+
+				var canvasElement = document.getElementById("a");
+				var imgURL = canvasElement.toDataURL("image/png");
+
+				var dlLink = document.createElement("a");
+				dlLink.style.display = "none";
+				document.body.appendChild(dlLink);
+				dlLink.href = imgURL;
+				dlLink.download = "Diagram.png";
+				dlLink.click();
+
+				document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+				document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+				document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+				document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+				document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
+				document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
+				document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
+				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+				}
+
+			function resizeCanvas()
+				{
+				var inputWidth = document.getElementById('widthSize');
+				var inputHeight = document.getElementById('heightSize');
+
+				var widthVal = Number(inputWidth.value);
+				if (isNaN(widthVal) || inputWidth.value=="")
+					{
+					widthVal = canvasProps.getWidth();
+					inputWidth.value = widthVal;
+					}
+
+				var heightVal = Number(inputHeight.value);
+				if (isNaN(heightVal) || inputHeight.value=="")
+					{
+					heightVal = canvasProps.getHeight();
+					inputHeight.value = heightVal;
+					}
+
+				if(canvasProps.getWidth() !== widthVal || canvasProps.getHeight() !== heightVal)
+					{
+					var undo = new CanvasChangeSizeCommand(widthVal, heightVal);
+					undo.execute();
+					History.addUndo(undo);
+					}
+				draw();
+				}
+
+			function resizeCanvasTextBoxes(e)
+				{
+				if (e.keyCode == 13)
+					{
+					resizeCanvas();
+					}
+				}
+
+			function insertArrow()
+				{
+				var myContainer = document.getElementById('container');
+				var myMiddleX = (myContainer.offsetWidth / 2) - 50 + myContainer.scrollLeft;
+				var myMiddleY = (myContainer.offsetHeight / 2) - 50 + myContainer.scrollTop;
+
+				selectedFigureId = -1;
+				state  = STATE_CONNECTOR_PICK_FIRST;
+				connectorType = Connector.TYPE_STRAIGHT;
+				redraw = true;
+
+				connectorPickFirst(myMiddleX,myMiddleY, Connector.TYPE_STRAIGHT);
+
+				draw();
+
+				state  = STATE_CONNECTOR_PICK_SECOND;
+				redraw = true;
+				connectorPickSecond(myMiddleX + 100,myMiddleY +100,Connector.TYPE_STRAIGHT);
+
+				state  = STATE_CONNECTOR_SELECTED;
+
+				draw();
+
+				var con = CONNECTOR_MANAGER.connectorGetById(selectedConnectorId);
+				setUpEditPanel(con);
+
+				document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+				document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+				document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+				document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+				document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+				document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+				document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
+				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+				}
+		</script>
+	</body>
+</html>
