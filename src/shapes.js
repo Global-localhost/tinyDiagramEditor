@@ -53,11 +53,11 @@ var FigureDefaults = {
 
     /**Corner radius
     * For example: for rounded rectangle*/
-    corner : 10,
+    corner : 15,
 
     /**Corner roundness
     * Value from 0 to 10, where 10 - it's circle radius.*/
-    cornerRoundness : 8,
+    cornerRoundness : 10,
 
     /**Color of lines*/
     strokeStyle : "#000000",
@@ -511,8 +511,8 @@ function figure_RoundedRectangle(x,y)
     f.properties.push(new BuilderProperty(STRING_BORDER_STYLE, 'style.lineStyle',BuilderProperty.TYPE_LINE_STYLE));
     
     var p = new Path();
-    var hShrinker = 10;
-    var vShrinker = 6;
+    var hShrinker = 1;
+    var vShrinker = 4;
     var l1 = new Line(new Point(x + hShrinker, y + vShrinker),
         new Point(x + FigureDefaults.segmentSize - hShrinker, y + vShrinker));
 
