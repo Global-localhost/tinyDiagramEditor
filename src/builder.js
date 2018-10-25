@@ -598,7 +598,15 @@ BuilderProperty.prototype = {
 
         var labelDiv = document.createElement("div");
         labelDiv.className = "label";
-        labelDiv.textContent = this.name;
+
+        if (this.property=="style.fillStyle")
+            {
+            labelDiv.textContent = STRING_BACKGROUND_COLOR;
+            }
+        else if (this.property=="style.strokeStyle")
+            {
+            labelDiv.textContent = STRING_BORDER_COLOR;
+            }
 
         // get last name of property to define it's icon
         var propNames = this.property.split('.');
