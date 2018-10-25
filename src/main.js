@@ -4157,6 +4157,7 @@ function copyObject()
 
             var con2 = CONNECTOR_MANAGER.connectorGetById(selectedConnectorId);
             con2.style = con1.style;
+            con2.endStyle = con1.endStyle;
             draw();
 
             setUpEditPanel(con2);
