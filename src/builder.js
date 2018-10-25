@@ -228,9 +228,16 @@ for(var i=0; i<73; i++){
   BuilderProperty.FONT_SIZES.push({Text:i+'px', Value:i});
 }
 
-/**Connector ends*/
-BuilderProperty.CONNECTOR_ENDS = [{Text:'Normal', Value:'Normal'},{Text:'Arrow', Value:'Arrow'},
-    {Text:'Empty Triangle', Value:'Empty'},{Text:'Filled Triangle', Value:'Filled'}];
+if (userLanguage.substring(0,2)=="es")
+	{
+	/**Connector ends*/
+	BuilderProperty.CONNECTOR_ENDS = [{Text:'L\u00EDnea', Value:'Normal'},{Text:'Flecha', Value:'Filled'}];
+	}
+	else
+	{
+	/**Connector ends*/
+	BuilderProperty.CONNECTOR_ENDS = [{Text:'Line', Value:'Normal'},{Text:'Arrow', Value:'Filled'}];
+	}
 
 /**Display separator*/
 BuilderProperty.SEPARATOR = 'SEPARATOR';
