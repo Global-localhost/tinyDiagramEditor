@@ -189,37 +189,37 @@ BuilderProperty.TYPE_URL= 'URL';
 var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
 if (userLanguage.substring(0,2)=="es")
-	{
-	/**Line widths*/
-	BuilderProperty.LINE_WIDTHS = [
-    	{Text: 'Borde con ancho de 1px', Value: '1'},{Text: 'Borde con ancho de 2px',Value: '2'},{Text: 'Borde con ancho de 3px',Value: '3'},
-    	{Text: 'Borde con ancho de 4px', Value: '4'},{Text: 'Borde con ancho de 5px',Value: '5'},{Text: 'Borde con ancho de 6px',Value: '6'},
-    	{Text: 'Borde con ancho de 7px', Value: '7'},{Text: 'Borde con ancho de 8px',Value: '8'},{Text: 'Borde con ancho de 9px',Value: '9'},
-    	{Text: 'Borde con ancho de 10px',Value: '10'}];
+    {
+    /**Line widths*/
+    BuilderProperty.LINE_WIDTHS = [
+        {Text: 'Borde con ancho de 1px', Value: '1'},{Text: 'Borde con ancho de 2px',Value: '2'},{Text: 'Borde con ancho de 3px',Value: '3'},
+        {Text: 'Borde con ancho de 4px', Value: '4'},{Text: 'Borde con ancho de 5px',Value: '5'},{Text: 'Borde con ancho de 6px',Value: '6'},
+        {Text: 'Borde con ancho de 7px', Value: '7'},{Text: 'Borde con ancho de 8px',Value: '8'},{Text: 'Borde con ancho de 9px',Value: '9'},
+        {Text: 'Borde con ancho de 10px',Value: '10'}];
 
-	/**Line styles*/
-	BuilderProperty.LINE_STYLES = [
-    	{Text: 'Borde continuo', Value: 'continuous'},
-    	{Text: 'Borde punteado', Value: 'dotted'},
-    	{Text: 'Borde interlineado',Value: 'dashed'}
-		];
-	}
-	else
-	{
-	/**Line widths*/
-	BuilderProperty.LINE_WIDTHS = [
-    	{Text: '1px width border', Value: '1'},{Text: '2px width border',Value: '2'},{Text: '3px width border',Value: '3'},
-    	{Text: '4px width border', Value: '4'},{Text: '5px width border',Value: '5'},{Text: '6px width border',Value: '6'},
-    	{Text: '7px width border', Value: '7'},{Text: '8px width border',Value: '8'},{Text: '9px width border',Value: '9'},
-    	{Text: '10px width border',Value: '10'}];
+    /**Line styles*/
+    BuilderProperty.LINE_STYLES = [
+        {Text: 'Borde continuo', Value: 'continuous'},
+        {Text: 'Borde punteado', Value: 'dotted'},
+        {Text: 'Borde interlineado',Value: 'dashed'}
+        ];
+    }
+    else
+    {
+    /**Line widths*/
+    BuilderProperty.LINE_WIDTHS = [
+        {Text: '1px width border', Value: '1'},{Text: '2px width border',Value: '2'},{Text: '3px width border',Value: '3'},
+        {Text: '4px width border', Value: '4'},{Text: '5px width border',Value: '5'},{Text: '6px width border',Value: '6'},
+        {Text: '7px width border', Value: '7'},{Text: '8px width border',Value: '8'},{Text: '9px width border',Value: '9'},
+        {Text: '10px width border',Value: '10'}];
 
-	/**Line styles*/
-	BuilderProperty.LINE_STYLES = [
-    	{Text: 'Continuous border', Value: 'continuous'},
-    	{Text: 'Dotted border', Value: 'dotted'},
-    	{Text: 'Dashed border',Value: 'dashed'}
-		];
-	}
+    /**Line styles*/
+    BuilderProperty.LINE_STYLES = [
+        {Text: 'Continuous border', Value: 'continuous'},
+        {Text: 'Dotted border', Value: 'dotted'},
+        {Text: 'Dashed border',Value: 'dashed'}
+        ];
+    }
 
 
 /**Font sizes*/
@@ -229,15 +229,15 @@ for(var i=0; i<73; i++){
 }
 
 if (userLanguage.substring(0,2)=="es")
-	{
-	/**Connector ends*/
-	BuilderProperty.CONNECTOR_ENDS = [{Text:'L\u00EDnea', Value:'Normal'},{Text:'Flecha', Value:'Filled'}];
-	}
-	else
-	{
-	/**Connector ends*/
-	BuilderProperty.CONNECTOR_ENDS = [{Text:'Line', Value:'Normal'},{Text:'Arrow', Value:'Filled'}];
-	}
+    {
+    /**Connector ends*/
+    BuilderProperty.CONNECTOR_ENDS = [{Text:'L\u00EDnea', Value:'Normal'},{Text:'Flecha', Value:'Filled'}];
+    }
+    else
+    {
+    /**Connector ends*/
+    BuilderProperty.CONNECTOR_ENDS = [{Text:'Line', Value:'Normal'},{Text:'Arrow', Value:'Filled'}];
+    }
 
 /**Display separator*/
 BuilderProperty.SEPARATOR = 'SEPARATOR';
@@ -480,6 +480,9 @@ BuilderProperty.prototype = {
         var uniqueId = new Date().getTime();
         var value = this.getValue(figureId);
 
+        var properties = this.property;
+        var IDFigure = figureId;
+
         var div = document.createElement("div");
         div.className = "line";
 
@@ -493,7 +496,14 @@ BuilderProperty.prototype = {
         inputDiv.setAttribute("type", "button"); 
         inputDiv.className = "labelsubmit";
         inputDiv.value = STRING_CHANGEIMAGE;
+
+        var input2Div = document.createElement("input");
+        input2Div.setAttribute("type", "button"); 
+        input2Div.className = "labelsubmit";
+        input2Div.value = STRING_DOWNLOADIMAGE;
+
         div.appendChild(inputDiv);
+        div.appendChild(input2Div);
 
         var inputFileDiv = document.createElement("input");
         inputFileDiv.setAttribute("type", "file"); 
@@ -515,8 +525,31 @@ BuilderProperty.prototype = {
             inputFileDiv.click();
             };
 
-        var properties = this.property;
-        var IDFigure = figureId;
+        input2Div.onclick = function()
+            {
+            var selectedImage = STACK.figureGetById(figureId);
+            var imageData = selectedImage.primitives[0].url;
+            var imageWidth = selectedImage.primitives[0].frameWidth;
+            var imageHeight = selectedImage.primitives[0].frameHeight;
+            var imageExtension = imageData.split(";")[0].split("/")[1];
+
+            var img = document.createElement("img");
+            img.src = imageData;
+
+            var canvas = document.createElement("canvas");
+            canvas.width = imageWidth;
+            canvas.height = imageHeight;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            var imgURL = canvas.toDataURL("image/" + imageExtension);
+
+            var dlLink = document.createElement("a");
+            dlLink.style.display = "none";
+            document.body.appendChild(dlLink);
+            dlLink.href = imgURL;
+            dlLink.download = "Image." + imageExtension;
+            dlLink.click();
+            };
 
         inputFileDiv.onchange = function(event)
             {
