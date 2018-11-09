@@ -3245,8 +3245,12 @@ function newDiagramFile()
         document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
         document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
         document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
+        document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
+        document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
         document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
         document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+
+        History.clear();
         }
         catch(error)
         {
@@ -3302,8 +3306,12 @@ function loadDiagramFile(tempDiagramData)
         document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
         document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
         document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
+        document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
+        document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
         document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
         document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");        
+        
+        History.clear();
         }
         catch(error)
         {
@@ -3779,6 +3787,18 @@ function action(action){
             redraw = true;
             break;
 
+        case 'undo':
+            Log.info("main.js->action()->Undo. Nr of actions in the STACK: " + History.COMMANDS.length);
+            History.undo();
+            redraw = true;
+            break;
+
+        case 'redo':
+            Log.info("main.js->action()->Redo. Nr of actions in the STACK: " + History.COMMANDS.length);
+            History.redo();
+            redraw = true;
+            break;
+
     }//end switch
 
     if(redraw){
@@ -4152,6 +4172,9 @@ function copyObject()
             connectorPickSecond(endX,endY,Connector.TYPE_STRAIGHT);
 
             state  = STATE_CONNECTOR_SELECTED;
+
+            var cmdCreateCon = new ConnectorCreateCommand(selectedConnectorId);
+            History.addUndo(cmdCreateCon);
 
             draw();
 
