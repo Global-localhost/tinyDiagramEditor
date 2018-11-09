@@ -529,16 +529,14 @@ BuilderProperty.prototype = {
             {
             var selectedImage = STACK.figureGetById(figureId);
             var imageData = selectedImage.primitives[0].url;
-            var imageWidth = selectedImage.primitives[0].frameWidth;
-            var imageHeight = selectedImage.primitives[0].frameHeight;
             var imageExtension = imageData.split(";")[0].split("/")[1];
 
             var img = document.createElement("img");
             img.src = imageData;
 
             var canvas = document.createElement("canvas");
-            canvas.width = imageWidth;
-            canvas.height = imageHeight;
+            canvas.width = img.width;
+            canvas.height = img.height;
             var ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
             var imgURL = canvas.toDataURL("image/" + imageExtension);
