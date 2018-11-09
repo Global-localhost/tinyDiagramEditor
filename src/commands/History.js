@@ -77,6 +77,9 @@ History.addUndo = function(command){
         
         //increase the current pointer
         History.CURRENT_POINTER++;
+
+        document.getElementById("buttonUndo").classList.add("menubar_button_undo_enabled");
+        document.getElementById("buttonUndo").classList.remove("menubar_button_undo_disabled");
     }
 }
 
@@ -86,9 +89,43 @@ History.addUndo = function(command){
 History.undo = function(){
     if(History.CURRENT_POINTER >= 0){
         Log.info('undo()->Type of action: ' + History.COMMANDS[History.CURRENT_POINTER].oType);
+
+        if ((History.COMMANDS[History.CURRENT_POINTER]).oType=="FigureCreateCommand")
+            {
+            document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+            document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+            document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+            document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+            document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
+            document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
+            document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
+            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+            }
+        else if ((History.COMMANDS[History.CURRENT_POINTER]).oType=="GroupDeleteCommand")
+            {
+            document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+            document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+            document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+            document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+            document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+            document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+            document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
+            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+            }
+
         History.COMMANDS[History.CURRENT_POINTER].undo();
-                        
+
         History.CURRENT_POINTER --;
+        if(History.CURRENT_POINTER <0)
+            {
+            document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
+            document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
+            }
+    }
+    else
+    {
+    document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
+    document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
     }
 }
 
@@ -111,4 +148,8 @@ History.pack = function(){
     //TODO: implement
 }
 
+History.clear = function(){
+    History.COMMANDS = [];
+    History.CURRENT_POINTER = -1;
+}
 
