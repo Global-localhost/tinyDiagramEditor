@@ -36,6 +36,10 @@
 			</div>
 			<div class="menubar_separator"></div>
 			<div class="menubar_holder">
+				<div class="menubar_button_undo_disabled" id="buttonUndo" onclick="historyUndo();"></div>
+			</div>
+			<div class="menubar_separator"></div>
+			<div class="menubar_holder">
 				<div class="menubar_button_trash_disabled" id="buttonDelete" onclick="deleteObject();"></div>
 			</div>
 		</div>
@@ -361,6 +365,11 @@
 				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
 				}
 
+			function historyUndo()
+				{
+				action('undo');
+				}
+
 			function resizeCanvas()
 				{
 				var inputWidth = document.getElementById("widthSize");
@@ -417,6 +426,9 @@
 				connectorPickSecond(myMiddleX + 100,myMiddleY +100,Connector.TYPE_STRAIGHT);
 
 				state  = STATE_CONNECTOR_SELECTED;
+
+				var cmdCreateCon = new ConnectorCreateCommand(selectedConnectorId);
+				History.addUndo(cmdCreateCon);
 
 				draw();
 
