@@ -60,31 +60,31 @@
 						for(var setName in figureSets)
 							{
 							var set = figureSets[setName];
-							var eSetDiv = document.createElement('div');
-							eSetDiv.setAttribute('id', setName);
-							eSetDiv.style.marginBottom = '10px';
+							var eSetDiv = document.createElement("div");
+							eSetDiv.setAttribute("id", setName);
+							eSetDiv.style.marginBottom = "10px";
 							if(firstPanel)
 								{
 								firstPanel = false;
 								}
 								else
 								{
-								eSetDiv.style.display = 'none';
+								eSetDiv.style.display = "none";
 								}
 
-							document.getElementById('figures').appendChild(eSetDiv);
+							document.getElementById("figures").appendChild(eSetDiv);
 
-							for(var figure in set['figures'])
+							for(var figure in set["figures"])
 								{
-								figure = set['figures'][figure];
+								figure = set["figures"][figure];
 
-								var figureFunctionName = 'figure_' + figure.figureFunction;
-								var figureThumbURL = 'lib/sets/' + setName + '/' + figure.image;
+								var figureFunctionName = "figure_" + figure.figureFunction;
+								var figureThumbURL = "lib/sets/" + setName + "/" + figure.image;
 
-								var eFigure = document.createElement('div');
+								var eFigure = document.createElement("div");
 								eFigure.className = figure.figureFunction;
 
-								eFigure.addEventListener('mousedown', function (figureFunction, figureThumbURL)
+								eFigure.addEventListener("mousedown", function (figureFunction, figureThumbURL)
 									{
 									return function(evt)
 										{
@@ -96,7 +96,7 @@
 											}
 											else
 											{
-											var myContainer = document.getElementById('container');
+											var myContainer = document.getElementById("container");
 											var myMiddleX = (myContainer.offsetWidth / 2) - 20 + myContainer.scrollLeft;
 											var myMiddleY = (myContainer.offsetHeight / 2) - 20 + myContainer.scrollTop;
 
@@ -210,25 +210,25 @@
 				STRING_DELETE_WARNING = "Delete the selected figure?";
 				}
 
-			document.getElementById('labelWidth').innerHTML = STRING_WIDTH;
-			document.getElementById('labelHeight').innerHTML = STRING_HEIGHT;
-			document.getElementById('sumbitSize').value = STRING_UPDATE;
+			document.getElementById("labelWidth").innerHTML = STRING_WIDTH;
+			document.getElementById("labelHeight").innerHTML = STRING_HEIGHT;
+			document.getElementById("sumbitSize").value = STRING_UPDATE;
 
 			window.onload = function()
 				{
-				var appURL = '.';
-				var figureSetsURL = appURL + '/editor/lib/sets';
-				var insertImageURL = appURL + '/editor/data/import/';
+				var appURL = ".";
+				var figureSetsURL = appURL + "/editor/lib/sets";
+				var insertImageURL = appURL + "/editor/data/import/";
 
-				var myDiv = document.getElementById('container');
+				var myDiv = document.getElementById("container");
 				myDiv.scrollTop = 0;
 				myDiv.scrollLeft = 0;
 
-				init('');
+				init("");
 
-				var myCanvas = document.getElementById('a');
-				var inputWidth = document.getElementById('widthSize');
-				var inputHeight = document.getElementById('heightSize');
+				var myCanvas = document.getElementById("a");
+				var inputWidth = document.getElementById("widthSize");
+				var inputHeight = document.getElementById("heightSize");
 				inputWidth.value = myCanvas.width;
 				inputHeight.value = myCanvas.height;
 				}
@@ -239,9 +239,9 @@
 				if (message == true)
 					{
 					newDiagramFile();
-					var myCanvas = document.getElementById('a');
-					var inputWidth = document.getElementById('widthSize');
-					var inputHeight = document.getElementById('heightSize');
+					var myCanvas = document.getElementById("a");
+					var inputWidth = document.getElementById("widthSize");
+					var inputHeight = document.getElementById("heightSize");
 					inputWidth.value = myCanvas.width;
 					inputHeight.value = myCanvas.height;
 					}
@@ -264,9 +264,9 @@
 							var contents = event.target.result;
 							loadDiagramFile(contents);
 
-							var myCanvas = document.getElementById('a');
-							var inputWidth = document.getElementById('widthSize');
-							var inputHeight = document.getElementById('heightSize');
+							var myCanvas = document.getElementById("a");
+							var inputWidth = document.getElementById("widthSize");
+							var inputHeight = document.getElementById("heightSize");
 							inputWidth.value = myCanvas.width;
 							inputHeight.value = myCanvas.height;
 							});
@@ -284,7 +284,7 @@
 
 			function exportToDGM()
 				{
-  				createFigureFunction = null;
+				createFigureFunction = null;
 
 				//deselect any figure
 				selectedFigureId = -1;
@@ -367,8 +367,8 @@
 
 			function resizeCanvas()
 				{
-				var inputWidth = document.getElementById('widthSize');
-				var inputHeight = document.getElementById('heightSize');
+				var inputWidth = document.getElementById("widthSize");
+				var inputHeight = document.getElementById("heightSize");
 
 				var widthVal = Number(inputWidth.value);
 				if (isNaN(widthVal) || inputWidth.value=="")
@@ -403,7 +403,7 @@
 
 			function insertArrow()
 				{
-				var myContainer = document.getElementById('container');
+				var myContainer = document.getElementById("container");
 				var myMiddleX = (myContainer.offsetWidth / 2) - 50 + myContainer.scrollLeft;
 				var myMiddleY = (myContainer.offsetHeight / 2) - 50 + myContainer.scrollTop;
 
