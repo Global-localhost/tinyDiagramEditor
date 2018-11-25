@@ -1404,7 +1404,8 @@ function onMouseUp(ev){
 
     lastClick = [];
     mousePressed = true;
-    
+    UndoRedoCheckerFirstMovement = true;
+
     switch(state){
 
         case STATE_NONE:
@@ -1728,6 +1729,9 @@ function onMouseUp(ev){
     draw();
 }
 
+// TO KNOW WHEN TO RECORD THE UNDO/REDO ACTIONS
+var UndoRedoCheckerFirstMovement = true;
+
 /**Remembers last move. Initially it's null but once set it's a [x,y] array*/
 var lastMove = null;
 
@@ -1858,13 +1862,20 @@ function onMouseMove(ev){
              */
             
             if(mousePressed){ // mouse is (at least was) pressed
+                    if (UndoRedoCheckerFirstMovement==true)
+                        {
+                        setUndo(true);
+                        UndoRedoCheckerFirstMovement = false;
+                        }
                 if(lastMove != null){ //we are in dragging mode
                     /*We need to use handleGetSelected() as if we are using handleGet(x,y) then 
                      *as we move the mouse....it can move faster/slower than the figure and we 
                      *will lose the Handle selection.
                      **/
+
+
                     var handle = HandleManager.handleGetSelected();
-                    
+
                     if(handle != null){ //We are over a Handle of selected Figure               
                         canvas.style.cursor = handle.getCursor();
                         handle.action(lastMove,x,y);
@@ -2006,11 +2017,19 @@ function onMouseMove(ev){
            
            //BRUTE COPY FROM FIGURE
            if(mousePressed){ // mouse is (at least was) pressed
+
+                    if (UndoRedoCheckerFirstMovement==true)
+                        {
+                        setUndo(true);
+                        UndoRedoCheckerFirstMovement = false;
+                        }
+
                 if(lastMove != null){ //we are in dragging mode
                     /*We need to use handleGetSelected() as if we are using handleGet(x,y) then 
                      *as we move the mouse....it can move faster/slower than the figure and we 
                      *will lose the Handle selection.
                      **/
+
                     var handle = HandleManager.handleGetSelected();
                     
                     if(handle != null){ //We are over a Handle of selected Container               
@@ -2088,7 +2107,15 @@ function onMouseMove(ev){
              */
             
             if(mousePressed){
+
+                    if (UndoRedoCheckerFirstMovement==true)
+                        {
+                        setUndo(true);
+                        UndoRedoCheckerFirstMovement = false;
+                        }
+
                 if(lastMove != null){
+
                     //Log.debug('onMouseMove() - STATE_GROUP_SELECTED + mouse pressed');
                     /*We need to use handleGetSelected() as if we are using handleGet(x,y) then 
                      *as we move the mouse....it can move faster/slower than the figure and we 
@@ -2256,6 +2283,11 @@ function onMouseMove(ev){
              *TODO: add description*/
             Log.info("Easy easy easy....it's fragile");
             if(mousePressed){ //only if we are dragging
+                    if (UndoRedoCheckerFirstMovement==true)
+                        {
+                        setUndo(true);
+                        UndoRedoCheckerFirstMovement = false;
+                        }
                 
                 /*update connector - but not unglue/glue it (Unglue and glue is handle in onMouseUp)
                  *as we want the glue-unglue to produce only when mouse is released*/   
@@ -3247,8 +3279,32 @@ function newDiagramFile()
         document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
         document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
         document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
+        document.getElementById("buttonRedo").classList.add("menubar_button_redo_disabled");
+        document.getElementById("buttonRedo").classList.remove("menubar_button_redo_enabled");
         document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
         document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+
+        sceneUndo01 = -1;
+        sceneUndo02 = -1;
+        sceneUndo03 = -1;
+        sceneUndo04 = -1;
+        sceneUndo05 = -1;
+        sceneUndo06 = -1;
+        sceneUndo07 = -1;
+        sceneUndo08 = -1;
+        sceneUndo09 = -1;
+        sceneUndo10 = -1;
+
+        sceneRedo01 = -1;
+        sceneRedo02 = -1;
+        sceneRedo03 = -1;
+        sceneRedo04 = -1;
+        sceneRedo05 = -1;
+        sceneRedo06 = -1;
+        sceneRedo07 = -1;
+        sceneRedo08 = -1;
+        sceneRedo09 = -1;
+        sceneRedo10 = -1;
 
         History.clear();
         }
@@ -3258,7 +3314,7 @@ function newDiagramFile()
         }
     }
 
-function loadDiagramFile(tempDiagramData)
+function loadDiagramFile(tempDiagramData,UndoRedoChecker)
     {
     try
         {
@@ -3306,11 +3362,39 @@ function loadDiagramFile(tempDiagramData)
         document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
         document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
         document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
-        document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
-        document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
         document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
         document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");        
         
+        if (UndoRedoChecker==true)
+            {
+            document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
+            document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
+            document.getElementById("buttonRedo").classList.add("menubar_button_redo_disabled");
+            document.getElementById("buttonRedo").classList.remove("menubar_button_redo_enabled");
+
+            sceneUndo01 = -1;
+            sceneUndo02 = -1;
+            sceneUndo03 = -1;
+            sceneUndo04 = -1;
+            sceneUndo05 = -1;
+            sceneUndo06 = -1;
+            sceneUndo07 = -1;
+            sceneUndo08 = -1;
+            sceneUndo09 = -1;
+            sceneUndo10 = -1;
+
+            sceneRedo01 = -1;
+            sceneRedo02 = -1;
+            sceneRedo03 = -1;
+            sceneRedo04 = -1;
+            sceneRedo05 = -1;
+            sceneRedo06 = -1;
+            sceneRedo07 = -1;
+            sceneRedo08 = -1;
+            sceneRedo09 = -1;
+            sceneRedo10 = -1;
+            }
+
         History.clear();
         }
         catch(error)
@@ -3329,6 +3413,7 @@ function deleteObject()
             var message = confirm(STRING_DELETE_WARNING);
             if (message == true)
                 {
+                setUndo(true);
                 var cmdDelFig = new FigureDeleteCommand(selectedFigureId);
                 cmdDelFig.execute();
                 History.addUndo(cmdDelFig);
@@ -3350,6 +3435,7 @@ function deleteObject()
             var message = confirm(STRING_DELETE_WARNING);
             if (message == true)
                 {
+                setUndo(true);
                 var cmdDelGrp = new GroupDeleteCommand(selectedGroupId);
                 cmdDelGrp.execute();
                 History.addUndo(cmdDelGrp);
@@ -3372,6 +3458,7 @@ function deleteObject()
             var message = confirm(STRING_DELETE_WARNING);
             if (message == true)
                 {
+                setUndo(true);
                 var cmdDelCon = new ConnectorDeleteCommand(selectedConnectorId);
                 cmdDelCon.execute();
                 History.addUndo(cmdDelCon);                                                
@@ -3395,6 +3482,7 @@ function deleteObject()
             var message = confirm(STRING_DELETE_WARNING);
             if (message == true)
                 {
+                setUndo(true);
                 var cmdDelContainer = new ContainerDeleteCommand(selectedContainerId);
                 cmdDelContainer.execute();
                 History.addUndo(cmdDelContainer);                                                
@@ -4040,6 +4128,7 @@ function moveBack()
     {
     if(selectedFigureId != -1)
         {
+        setUndo(true);
         var cmdMoveBack = new FigureZOrderCommand(selectedFigureId, STACK.idToIndex[selectedFigureId] - 1);
         cmdMoveBack.execute();
         History.addUndo(cmdMoveBack);
@@ -4052,12 +4141,13 @@ function moveFront()
     {
     if(selectedFigureId != -1)
         {
+        setUndo(true);
         var cmdMoveForward = new FigureZOrderCommand(selectedFigureId, STACK.idToIndex[selectedFigureId] + 1);
         cmdMoveForward.execute();
         History.addUndo(cmdMoveForward);
         redraw = true;
         draw();
-        }            
+        }
     }
 
 function copyObject()
@@ -4082,6 +4172,8 @@ function copyObject()
     // PASTE
     if(clipboardBuffer[0])
         {
+        setUndo(true);
+
         // if something was copied
         switch(state)
             {

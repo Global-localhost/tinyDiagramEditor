@@ -36,7 +36,10 @@
 			</div>
 			<div class="menubar_separator"></div>
 			<div class="menubar_holder">
-				<div class="menubar_button_undo_disabled" id="buttonUndo" onclick="historyUndo();"></div>
+				<div class="menubar_button_undo_disabled" id="buttonUndo" onclick="getUndo();"></div>
+			</div>
+			<div class="menubar_holder">
+				<div class="menubar_button_redo_disabled" id="buttonRedo" onclick="getRedo();"></div>
 			</div>
 			<div class="menubar_separator"></div>
 			<div class="menubar_holder">
@@ -94,16 +97,44 @@
 										{
 										evt.preventDefault();
 
-										if (figureFunction=="figure_Arrow")
+										setUndo(true);
+
+										var myCanvas = document.getElementById("a");
+										var myContainer = document.getElementById("container");
+										var myMiddleXCanvas = (myCanvas.width / 2) + myCanvas.scrollLeft;
+										var myMiddleYCanvas = (myCanvas.height / 2) + myCanvas.scrollTop;
+										var myMiddleXContainer = (myContainer.offsetWidth / 2) + myContainer.scrollLeft;
+										var myMiddleYContainer = (myContainer.offsetHeight / 2) + myContainer.scrollTop;
+										var myMiddleX = 0;
+										var myMiddleY = 0;
+
+										if (myContainer.offsetHeight>=myCanvas.height && myContainer.offsetWidth>=myCanvas.width)
 											{
-											insertArrow();
+											myMiddleX = myMiddleXCanvas;
+											myMiddleY = myMiddleYCanvas;
+											}
+										else if (myContainer.offsetWidth>=myCanvas.width)
+											{
+											myMiddleX = myMiddleXCanvas;
+											myMiddleY = myMiddleYContainer;
+											}
+										else if (myContainer.offsetHeight>=myCanvas.height)
+											{
+											myMiddleX = myMiddleXContainer;
+											myMiddleY = myMiddleYCanvas;
 											}
 											else
 											{
-											var myContainer = document.getElementById("container");
-											var myMiddleX = (myContainer.offsetWidth / 2) - 20 + myContainer.scrollLeft;
-											var myMiddleY = (myContainer.offsetHeight / 2) - 20 + myContainer.scrollTop;
+											myMiddleX = myMiddleXContainer;
+											myMiddleY = myMiddleYContainer;
+											}
 
+										if (figureFunction=="figure_Arrow")
+											{
+											insertArrow(myMiddleX,myMiddleY);
+											}
+											else
+											{
 											var cmdCreateFig = new FigureCreateCommand(window[figureFunction], myMiddleX, myMiddleY);
 											cmdCreateFig.execute();
 											History.addUndo(cmdCreateFig);
@@ -218,6 +249,200 @@
 			document.getElementById("labelHeight").innerHTML = STRING_HEIGHT;
 			document.getElementById("sumbitSize").value = STRING_UPDATE;
 
+			var sceneUndo01 = -1;
+			var sceneUndo02 = -1;
+			var sceneUndo03 = -1;
+			var sceneUndo04 = -1;
+			var sceneUndo05 = -1;
+			var sceneUndo06 = -1;
+			var sceneUndo07 = -1;
+			var sceneUndo08 = -1;
+			var sceneUndo09 = -1;
+			var sceneUndo10 = -1;
+
+			var sceneRedo01 = -1;
+			var sceneRedo02 = -1;
+			var sceneRedo03 = -1;
+			var sceneRedo04 = -1;
+			var sceneRedo05 = -1;
+			var sceneRedo06 = -1;
+			var sceneRedo07 = -1;
+			var sceneRedo08 = -1;
+			var sceneRedo09 = -1;
+			var sceneRedo10 = -1;
+
+			function setUndo(a)
+				{
+				var diagram = { c: canvasProps, s:STACK, m:CONNECTOR_MANAGER, p:CONTAINER_MANAGER, v: DIAGRAMO.fileVersion };
+				var serializedDiagram = JSON.stringify(diagram);
+
+				if (sceneUndo01==-1)		{sceneUndo01 = serializedDiagram;}
+				else if (sceneUndo02==-1)	{sceneUndo02 = serializedDiagram;}
+				else if (sceneUndo03==-1)	{sceneUndo03 = serializedDiagram;}
+				else if (sceneUndo04==-1)	{sceneUndo04 = serializedDiagram;}
+				else if (sceneUndo05==-1)	{sceneUndo05 = serializedDiagram;}
+				else if (sceneUndo06==-1)	{sceneUndo06 = serializedDiagram;}
+				else if (sceneUndo07==-1)	{sceneUndo07 = serializedDiagram;}
+				else if (sceneUndo08==-1)	{sceneUndo08 = serializedDiagram;}
+				else if (sceneUndo09==-1)	{sceneUndo09 = serializedDiagram;}
+				else if (sceneUndo10==-1)	{sceneUndo10 = serializedDiagram;}
+				else
+					{
+					sceneUndo01 = sceneUndo02;
+					sceneUndo02 = sceneUndo03;
+					sceneUndo03 = sceneUndo04;
+					sceneUndo04 = sceneUndo05;
+					sceneUndo05 = sceneUndo06;
+					sceneUndo06 = sceneUndo07;
+					sceneUndo07 = sceneUndo08;
+					sceneUndo08 = sceneUndo09;
+					sceneUndo09 = sceneUndo10;
+					sceneUndo10 = serializedDiagram;
+					}
+
+				// CLEARING REDO IF A NEW ACTION WAS EXECUTED
+				if (a==true)
+					{
+					sceneRedo01 = -1;
+					sceneRedo02 = -1;
+					sceneRedo03 = -1;
+					sceneRedo04 = -1;
+					sceneRedo05 = -1;
+					sceneRedo06 = -1;
+					sceneRedo07 = -1;
+					sceneRedo08 = -1;
+					sceneRedo09 = -1;
+					sceneRedo10 = -1;
+
+					document.getElementById("buttonRedo").classList.add("menubar_button_redo_disabled");
+					document.getElementById("buttonRedo").classList.remove("menubar_button_redo_enabled");
+					}
+
+				document.getElementById("buttonUndo").classList.add("menubar_button_undo_enabled");
+				document.getElementById("buttonUndo").classList.remove("menubar_button_undo_disabled");
+				}
+
+			function setRedo()
+				{
+				var diagram = { c: canvasProps, s:STACK, m:CONNECTOR_MANAGER, p:CONTAINER_MANAGER, v: DIAGRAMO.fileVersion };
+				var serializedDiagram = JSON.stringify(diagram);
+
+				if (sceneRedo01==-1)		{sceneRedo01 = serializedDiagram;}
+				else if (sceneRedo02==-1)	{sceneRedo02 = serializedDiagram;}
+				else if (sceneRedo03==-1)	{sceneRedo03 = serializedDiagram;}
+				else if (sceneRedo04==-1)	{sceneRedo04 = serializedDiagram;}
+				else if (sceneRedo05==-1)	{sceneRedo05 = serializedDiagram;}
+				else if (sceneRedo06==-1)	{sceneRedo06 = serializedDiagram;}
+				else if (sceneRedo07==-1)	{sceneRedo07 = serializedDiagram;}
+				else if (sceneRedo08==-1)	{sceneRedo08 = serializedDiagram;}
+				else if (sceneRedo09==-1)	{sceneRedo09 = serializedDiagram;}
+				else if (sceneRedo10==-1)	{sceneRedo10 = serializedDiagram;}
+				else
+					{
+					sceneRedo01 = sceneRedo02;
+					sceneRedo02 = sceneRedo03;
+					sceneRedo03 = sceneRedo04;
+					sceneRedo04 = sceneRedo05;
+					sceneRedo05 = sceneRedo06;
+					sceneRedo06 = sceneRedo07;
+					sceneRedo07 = sceneRedo08;
+					sceneRedo08 = sceneRedo09;
+					sceneRedo09 = sceneRedo10;
+					sceneRedo10 = serializedDiagram;
+					}
+
+				document.getElementById("buttonRedo").classList.add("menubar_button_redo_enabled");
+				document.getElementById("buttonRedo").classList.remove("menubar_button_redo_disabled");
+				}
+
+			function getUndo()
+				{
+				var selectedUndo = - 1;
+				var contents = -1;
+
+				if (sceneUndo10!=-1)		{contents = sceneUndo10;selectedUndo = 10;}
+				else if (sceneUndo09!=-1)	{contents = sceneUndo09;selectedUndo = 9;}
+				else if (sceneUndo08!=-1)	{contents = sceneUndo08;selectedUndo = 8;}
+				else if (sceneUndo07!=-1)	{contents = sceneUndo07;selectedUndo = 7;}
+				else if (sceneUndo06!=-1)	{contents = sceneUndo06;selectedUndo = 6;}
+				else if (sceneUndo05!=-1)	{contents = sceneUndo05;selectedUndo = 5;}
+				else if (sceneUndo04!=-1)	{contents = sceneUndo04;selectedUndo = 4;}
+				else if (sceneUndo03!=-1)	{contents = sceneUndo03;selectedUndo = 3;}
+				else if (sceneUndo02!=-1)	{contents = sceneUndo02;selectedUndo = 2;}
+				else if (sceneUndo01!=-1)	{contents = sceneUndo01;selectedUndo = 1;}
+
+				if (contents != -1)
+					{
+					setRedo();
+
+					loadDiagramFile(contents,false);
+
+					var myCanvas = document.getElementById("a");
+					var inputWidth = document.getElementById("widthSize");
+					var inputHeight = document.getElementById("heightSize");
+					inputWidth.value = myCanvas.width;
+					inputHeight.value = myCanvas.height;
+
+					if (selectedUndo==10)	 {sceneUndo10 = -1;}
+					else if (selectedUndo==9){sceneUndo09 = -1;}
+					else if (selectedUndo==8){sceneUndo08 = -1;}
+					else if (selectedUndo==7){sceneUndo07 = -1;}
+					else if (selectedUndo==6){sceneUndo06 = -1;}
+					else if (selectedUndo==5){sceneUndo05 = -1;}
+					else if (selectedUndo==4){sceneUndo04 = -1;}
+					else if (selectedUndo==3){sceneUndo03 = -1;}
+					else if (selectedUndo==2){sceneUndo02 = -1;}
+					else if (selectedUndo==1){sceneUndo01 = -1;
+											  document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
+											  document.getElementById("buttonUndo").classList.remove("menubar_button_undo_enabled");
+											}
+					}
+				}
+
+			function getRedo()
+				{
+				var selectedRedo = - 1;
+				var contents = -1;
+
+				if (sceneRedo10!=-1)		{contents = sceneRedo10;selectedRedo = 10;}
+				else if (sceneRedo09!=-1)	{contents = sceneRedo09;selectedRedo = 9;}
+				else if (sceneRedo08!=-1)	{contents = sceneRedo08;selectedRedo = 8;}
+				else if (sceneRedo07!=-1)	{contents = sceneRedo07;selectedRedo = 7;}
+				else if (sceneRedo06!=-1)	{contents = sceneRedo06;selectedRedo = 6;}
+				else if (sceneRedo05!=-1)	{contents = sceneRedo05;selectedRedo = 5;}
+				else if (sceneRedo04!=-1)	{contents = sceneRedo04;selectedRedo = 4;}
+				else if (sceneRedo03!=-1)	{contents = sceneRedo03;selectedRedo = 3;}
+				else if (sceneRedo02!=-1)	{contents = sceneRedo02;selectedRedo = 2;}
+				else if (sceneRedo01!=-1)	{contents = sceneRedo01;selectedRedo = 1;}
+
+				if (contents != -1)
+					{
+					setUndo(false);
+
+					loadDiagramFile(contents,false);
+
+					var myCanvas = document.getElementById("a");
+					var inputWidth = document.getElementById("widthSize");
+					var inputHeight = document.getElementById("heightSize");
+					inputWidth.value = myCanvas.width;
+					inputHeight.value = myCanvas.height;
+
+					if (selectedRedo==10)	 {sceneRedo10 = -1;}
+					else if (selectedRedo==9){sceneRedo09 = -1;}
+					else if (selectedRedo==8){sceneRedo08 = -1;}
+					else if (selectedRedo==7){sceneRedo07 = -1;}
+					else if (selectedRedo==6){sceneRedo06 = -1;}
+					else if (selectedRedo==5){sceneRedo05 = -1;}
+					else if (selectedRedo==4){sceneRedo04 = -1;}
+					else if (selectedRedo==3){sceneRedo03 = -1;}
+					else if (selectedRedo==2){sceneRedo02 = -1;}
+					else if (selectedRedo==1){sceneRedo01 = -1;
+											  document.getElementById("buttonRedo").classList.add("menubar_button_redo_disabled");
+											  document.getElementById("buttonRedo").classList.remove("menubar_button_redo_enabled");
+											}
+					}
+				}
+
 			window.onload = function()
 				{
 				var myDiv = document.getElementById("container");
@@ -262,7 +487,7 @@
 						reader.addEventListener("load", function (event)
 							{
 							var contents = event.target.result;
-							loadDiagramFile(contents);
+							loadDiagramFile(contents,true);
 
 							var myCanvas = document.getElementById("a");
 							var inputWidth = document.getElementById("widthSize");
@@ -365,13 +590,10 @@
 				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
 				}
 
-			function historyUndo()
-				{
-				action('undo');
-				}
-
 			function resizeCanvas()
 				{
+				setUndo(true);
+
 				var inputWidth = document.getElementById("widthSize");
 				var inputHeight = document.getElementById("heightSize");
 
@@ -406,24 +628,20 @@
 					}
 				}
 
-			function insertArrow()
+			function insertArrow(x,y)
 				{
-				var myContainer = document.getElementById("container");
-				var myMiddleX = (myContainer.offsetWidth / 2) - 50 + myContainer.scrollLeft;
-				var myMiddleY = (myContainer.offsetHeight / 2) - 50 + myContainer.scrollTop;
-
 				selectedFigureId = -1;
 				state  = STATE_CONNECTOR_PICK_FIRST;
 				connectorType = Connector.TYPE_STRAIGHT;
 				redraw = true;
 
-				connectorPickFirst(myMiddleX,myMiddleY, Connector.TYPE_STRAIGHT);
+				connectorPickFirst(x - 25, y - 25, Connector.TYPE_STRAIGHT);
 
 				draw();
 
 				state  = STATE_CONNECTOR_PICK_SECOND;
 				redraw = true;
-				connectorPickSecond(myMiddleX + 100,myMiddleY +100,Connector.TYPE_STRAIGHT);
+				connectorPickSecond(x + 25, y + 25, Connector.TYPE_STRAIGHT);
 
 				state  = STATE_CONNECTOR_SELECTED;
 

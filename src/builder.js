@@ -224,8 +224,8 @@ if (userLanguage.substring(0,2)=="es")
 
 /**Font sizes*/
 BuilderProperty.FONT_SIZES = [];
-for(var i=0; i<73; i++){
-  BuilderProperty.FONT_SIZES.push({Text:i+'px', Value:i});
+for(var i=6; i<73; i++){
+  BuilderProperty.FONT_SIZES.push({Text:i, Value:i});
 }
 
 if (userLanguage.substring(0,2)=="es")
@@ -368,6 +368,7 @@ BuilderProperty.prototype = {
         div.children[0].appendChild(check);
         check.onclick = function(figureId,property){
                             return function(){
+                                setUndo(true);
                                 updateShape(figureId, property, this.checked)
                             }
                         }(figureId, this.property);
@@ -403,11 +404,13 @@ BuilderProperty.prototype = {
         div.appendChild(document.createElement("br"));
         div.appendChild(text);
 
+        var firstBlur = true;
+
         // used to change Text property
         text.onchange = function(shapeId,property){
             return function(){
                 // update shape but without adding {Command} to the {History}
-                updateShape(shapeId, property, this.value, true);
+                //updateShape(shapeId, property, this.value, true);
             };
         }(shapeId, this.property);
 
@@ -416,7 +419,15 @@ BuilderProperty.prototype = {
             return function(){
                 // create {Command} where previous value is
                 // the initialization value of textarea
-                updateShape(shapeId, property, this.value, false, previousValue);
+                if (firstBlur==true)
+                    {
+                    if (previousValue!=this.value)
+                        {
+                        setUndo(true);
+                        updateShape(shapeId, property, this.value, true);
+                        }
+                    firstBlur = false;
+                    }
             };
         }(shapeId, this.property, text.value);
 
@@ -459,6 +470,7 @@ BuilderProperty.prototype = {
         text.onchange = function(figureId,property){
             return function(){
                 Log.info("Builder.generateSingleTextCode() value: " + this.value);
+                setUndo(true);
                 updateShape(figureId, property, this.value);
             }
         }(figureId, this.property);
@@ -560,6 +572,7 @@ BuilderProperty.prototype = {
                     reader.readAsDataURL(inputFileDiv.files[0]);
                     reader.onload = function ()
                         {
+                        setUndo(true);
                         labelpictext.value = reader.result;
                         updateShape(IDFigure, properties, labelpictext.value);
                         };
@@ -614,6 +627,7 @@ BuilderProperty.prototype = {
         var selProperty = this.property; //save it in a separate variable as if refered by (this) it will refert to the 'select' DOM Object
         select.onchange = function(){
             //alert('Font size triggered. Figure id : ' + figureId + ' property: ' + selProperty + ' new value' + this.options[this.selectedIndex].value);
+            setUndo(true);
             updateShape(figureId, selProperty, this.options[this.selectedIndex].value);
         };
 
@@ -675,6 +689,7 @@ BuilderProperty.prototype = {
         var propExposedToAnonymous = this.property;
         colorPicker.onchange = function() {
             Log.info('generateColorCode(): figureId: ' + figureId + 'type: ' + this.type + ' name: ' + this.name + ' property: ' + this.property);
+            setUndo(true);
             updateShape(figureId, propExposedToAnonymous, colorPicker.value);
         };
     },
@@ -711,6 +726,7 @@ BuilderProperty.prototype = {
                 // update control first
                 this.setAttribute(BuilderProperty.BUTTON_CHECKED_ATTRIBUTE, newValue);
                 Log.info("Builder.generateButtonCheckerCode() value: " + newValue);
+                setUndo(true);
                 updateShape(figureId, property, newValue);
             };
         }(figureId, this.property);
