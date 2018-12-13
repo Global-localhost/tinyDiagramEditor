@@ -702,11 +702,11 @@ function insertImage(imageFileName, errorMessage){
 }
 
     /**Activate snapToGrip  option*/
-function snapToGrid(){	
-	Log.info("snapToGrid called;");
-	snapTo =! snapTo;
-	
-	if(snapTo){
+function snapToGrid(){    
+    Log.info("snapToGrid called;");
+    snapTo =! snapTo;
+    
+    if(snapTo){
             if(!gridVisible){
                 gridVisible = true;
                 backgroundImage = null; // reset cached background image of canvas
@@ -715,7 +715,7 @@ function snapToGrid(){
                 //trigger a repaint;
                 draw();
             }
-	}
+    }
 }
 
 
@@ -724,20 +724,20 @@ function snapToGrid(){
  *will be disabled
  **/
 function showGrid(){
-	
-	/**If grid was visible and snap to was check we need to take measures*/
-	if(gridVisible){ 
+    
+    /**If grid was visible and snap to was check we need to take measures*/
+    if(gridVisible){ 
             if(snapTo){
                 snapTo = false;
                 document.getElementById("snapCheckbox").checked = false;        
             }
     }
-	
+    
     gridVisible = !gridVisible;
     backgroundImage = null; // reset cached background image of canvas
     
-	//trigger a repaint;
-	draw();
+    //trigger a repaint;
+    draw();
 }
 
 
@@ -1422,16 +1422,16 @@ function onMouseUp(ev){
 
             // clear current text editor
             if (currentTextEditor!=null)
-            	{
+                {
                 currentTextEditor.destroy();
                 currentTextEditor = null;
-            	}
+                }
 
             state = STATE_NONE;
 
-			setUpEditPanel(null)
+            setUpEditPanel(null)
 
-			draw();
+            draw();
 
             document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
             document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
@@ -1607,38 +1607,38 @@ function onMouseUp(ev){
                 Log.info('onMouseUp() + STATE_SELECTING_MULTIPLE  + 1 figure => STATE_FIGURE_SELECTED');
             }
             if(figuresToAdd.length >= 4)
-            	{
-				document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
-				document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
-    	        document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
-	            document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
-            	document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
-        	    document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
-    	        document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
-	            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
-            	}
+                {
+                document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+                document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+                document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+                document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+                document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+                document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+                document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
+                document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+                }
             else if (figuresToAdd.length>0 && figuresToAdd.length<3)
-            	{
-				document.getElementById("buttonFront").classList.add("menubar_button_front_enabled");
-				document.getElementById("buttonFront").classList.remove("menubar_button_front_disabled");
-    	        document.getElementById("buttonBack").classList.add("menubar_button_back_enabled");
-	            document.getElementById("buttonBack").classList.remove("menubar_button_back_disabled");
-            	document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
-        	    document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
-    	        document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
-	            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
-            	}
-            	else
-            	{
-            	document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
-            	document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
-            	document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
-            	document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
-            	document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
-            	document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
-            	document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
-            	document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
-	            }
+                {
+                document.getElementById("buttonFront").classList.add("menubar_button_front_enabled");
+                document.getElementById("buttonFront").classList.remove("menubar_button_front_disabled");
+                document.getElementById("buttonBack").classList.add("menubar_button_back_enabled");
+                document.getElementById("buttonBack").classList.remove("menubar_button_back_disabled");
+                document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+                document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+                document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
+                document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+                }
+                else
+                {
+                document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
+                document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
+                document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
+                document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
+                document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
+                document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
+                document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
+                document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+                }
             break;
             
         case STATE_CONNECTOR_PICK_SECOND:
@@ -1663,10 +1663,10 @@ function onMouseUp(ev){
             document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
             document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
             document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
-    	    document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
-	        document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+            document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+            document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
             document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
-			document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
             break;
 
         
@@ -1691,15 +1691,15 @@ function onMouseUp(ev){
             document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
             document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
             document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
-    	    document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
-	        document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+            document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+            document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
             document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
-			document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
             break;
             
             
         case STATE_CONNECTOR_SELECTED:
-        	/*
+            /*
             if(currentMoveUndo){
                 var turns = CONNECTOR_MANAGER.connectorGetById(selectedConnectorId).turningPoints;
                 var newTurns = [turns.length];
@@ -1718,10 +1718,10 @@ function onMouseUp(ev){
             document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
             document.getElementById("buttonBack").classList.add("menubar_button_back_disabled");
             document.getElementById("buttonBack").classList.remove("menubar_button_back_enabled");
-    	    document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
-	        document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+            document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+            document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
             document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
-			document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+            document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
             break;
     }
     currentMoveUndo = null;
@@ -2525,7 +2525,7 @@ function connectorPickSecond(x, y, ev){
     var fCpOverId = CONNECTOR_MANAGER.connectionPointGetByXY(x, y, ConnectionPoint.TYPE_FIGURE); //find figure's CP
     //get Figure's id if over it
     //var fOverId = STACK.figureGetByXY(x,y);
-	var fOverId = -1;
+    var fOverId = -1;
 
     //TODO: remove 
     //play with algorithm
@@ -3062,7 +3062,7 @@ var backgroundImage = null;
  * @param {HTMLCanvasElement} canvasElement the <canvas> DOM element
  * */
 function addBackground(canvasElement){
-	Log.info("addBackground: called");
+    Log.info("addBackground: called");
 
     var ctx = canvasElement.getContext('2d');
 
@@ -3109,17 +3109,17 @@ function addBackground(canvasElement){
         backgroundImage.src = canvasElement.toDataURL();
 
     } else {
-    //	backgroundImage.onload = function(e){
-    //		ctx.drawImage(this, 0, 0);
-    //	} //end onload
+    //    backgroundImage.onload = function(e){
+    //        ctx.drawImage(this, 0, 0);
+    //    } //end onload
 
         // draw buffered background image on canvas
         ctx.drawImage(backgroundImage, 0, 0);
     }
 
 }//end function
-			
-			
+            
+            
 
 /**Cleans up the canvas. It also add a white background to avoid "transparent"
  *background issue in PNG
@@ -3127,10 +3127,10 @@ function addBackground(canvasElement){
  *@author Alex
  **/
 function reset(canvas){
-	var ctx = canvas.getContext('2d');
-	ctx.clearRect(0,0,canvas.width,canvas.height);   
-	ctx.fillStyle = '#FFFFFF';
-	ctx.fillRect(0,0,canvas.width,canvas.height);			
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);   
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0,0,canvas.width,canvas.height);            
 }
 
 
@@ -3142,12 +3142,12 @@ function draw(){
     //    Log.group("A draw started");
     //alert('Paint 1')
     reset(getCanvas());    
-	
-	//if grid visible paint it
-//	if(gridVisible){ //paint grid
-		addBackground(getCanvas());
-//	}
-	
+    
+    //if grid visible paint it
+//    if(gridVisible){ //paint grid
+        addBackground(getCanvas());
+//    }
+    
     //alert('Paint 2')
     STACK.paint(ctx);
     
@@ -3170,7 +3170,7 @@ function renderedCanvas(){
    var tempCanvas = document.getElementById('tempCanvas');
    if(tempCanvas === null){
            tempCanvas = document.createElement('canvas');
-           tempCanvas.setAttribute('id', 'tempCanvas');					
+           tempCanvas.setAttribute('id', 'tempCanvas');                    
            tempCanvas.style.display = 'none';
 
            //it seems that there is no need to actually add it to the dom tree to be able to render (tested: IE9, FF9, Chrome 19)
@@ -3247,23 +3247,23 @@ function newDiagramFile()
         CONNECTOR_MANAGER = ConnectorManager.load(obj['m']);            
         CONTAINER_MANAGER = ContainerFigureManager.load(obj['p']);
 
-		createFigureFunction = null;
+        createFigureFunction = null;
 
         //deselect any figure
         selectedFigureId = -1;
         selectedConnectionPointId = -1;
         selectedConnectorId = -1;
 
-		// clear current text editor
+        // clear current text editor
         if (currentTextEditor!=null)
-        	{
+            {
             currentTextEditor.destroy();
             currentTextEditor = null;
             }
 
-		state = STATE_NONE;
+        state = STATE_NONE;
 
-		setUpEditPanel(null)
+        setUpEditPanel(null)
 
         draw();
 
@@ -3329,32 +3329,35 @@ function loadDiagramFile(tempDiagramData,UndoRedoChecker)
         canvasProps = CanvasProps.load(obj['c']);
         canvasProps.sync();
 
-        CONNECTOR_MANAGER = ConnectorManager.load(obj['m']);            
+        CONNECTOR_MANAGER = ConnectorManager.load(obj['m']);
         CONTAINER_MANAGER = ContainerFigureManager.load(obj['p']);
 
-		createFigureFunction = null;
+        createFigureFunction = null;
 
         //deselect any figure
         selectedFigureId = -1;
         selectedConnectionPointId = -1;
         selectedConnectorId = -1;
 
-		// clear current text editor
+        // clear current text editor
         if (currentTextEditor!=null)
-        	{
+            {
             currentTextEditor.destroy();
             currentTextEditor = null;
             }
 
-		state = STATE_NONE;
+        state = STATE_NONE;
 
-		setUpEditPanel(null)
+        setUpEditPanel(null)
 
         draw();
 
-        var myDiv = document.getElementById('container');
-        myDiv.scrollTop = 0;
-        myDiv.scrollLeft = 0;
+        if (UndoRedoChecker==true)
+            {
+            var myDiv = document.getElementById('container');
+            myDiv.scrollTop = 0;
+            myDiv.scrollLeft = 0;
+            }
 
         document.getElementById("buttonFront").classList.add("menubar_button_front_disabled");
         document.getElementById("buttonFront").classList.remove("menubar_button_front_enabled");
@@ -3363,8 +3366,8 @@ function loadDiagramFile(tempDiagramData,UndoRedoChecker)
         document.getElementById("buttonCopy").classList.add("menubar_button_copy_disabled");
         document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
         document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
-        document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");        
-        
+        document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+
         if (UndoRedoChecker==true)
             {
             document.getElementById("buttonUndo").classList.add("menubar_button_undo_disabled");
