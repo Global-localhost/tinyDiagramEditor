@@ -3543,7 +3543,8 @@ $(document).mouseup(
 
 //TODO: convert to a normal listener (for "onresize" event)
 window.onresize = function(){
-    minimap.initMinimap()
+    minimap.initMinimap();
+    minimap.updateMinimap();
 };
 
 var currentDiagramId = null;
