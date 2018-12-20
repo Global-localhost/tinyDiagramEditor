@@ -3396,6 +3396,11 @@ function loadDiagramFile(tempDiagramData,UndoRedoChecker)
             sceneRedo08 = -1;
             sceneRedo09 = -1;
             sceneRedo10 = -1;
+
+            setTimeout(function ()
+                {
+                draw();
+                }, 1000);
             }
 
         History.clear();
