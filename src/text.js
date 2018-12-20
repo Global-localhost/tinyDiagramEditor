@@ -162,6 +162,9 @@ Text.FONTS = [{
     Value: "arial",
     Text: "Arial"
 },{
+    Value: "arial black",
+    Text: "Arial Black"
+},{
     Value: "arial narrow",
     Text: "Arial Narrow"
 },{
