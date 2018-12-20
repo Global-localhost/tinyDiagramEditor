@@ -20,7 +20,6 @@
     //build color picker
     control = $("<div class='color_picker'>&nbsp;</div>")
     if($(element).val()==""){
-        control.css("background-image","url(/assets/images/noColor.png)");
     }
     else {
         control.css('background-color', $(element).val());
@@ -50,9 +49,6 @@
      $.each($.fn.colorPicker.defaultColors, function(i){
       swatch = $("<div class='color_swatch'>&nbsp;</div>")
       if(this[0] == 'n' && this[1] == '/' && this[2] == 'a' || this == "n/a"){//need both for all browser support
-          swatch.css("background-image","url(assets/images/noColor.png)");
-          swatch.css("background-position","center")
-          swatch.css("background-repeat","repeat-x");//i use this instead of comparing the URL, as it changes based on location
       }
       else{
         swatch.css("background-color", "#" + this);
@@ -145,7 +141,6 @@
       
     }
     else{
-      $(selectorOwner).css("background-image", "url(assets/images/noColor.png)");
         $(selectorOwner).prev("input").val("").change();
     }
   //close the selector

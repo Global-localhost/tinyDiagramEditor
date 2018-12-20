@@ -159,13 +159,13 @@ if (userLanguage.substring(0,2)=="es")
 
 /**An {Array} of fonts*/
 Text.FONTS = [{
-    Value: "arial",
+    Value: "tdearial",
     Text: "Arial"
 },{
-    Value: "arial black",
+    Value: "tdearialblack",
     Text: "Arial Black"
 },{
-    Value: "arial narrow",
+    Value: "tdearialnarrow",
     Text: "Arial Narrow"
 },{
     Value: "courier new",
