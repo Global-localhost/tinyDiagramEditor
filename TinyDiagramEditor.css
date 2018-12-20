@@ -18,7 +18,7 @@ body{top:0;margin:0;padding:0;background-color:#F2F2F2;overflow:hidden;}
 .labelpictext {border:1px solid silver;resize:none;height:180px;width:177px;}
 .selectbox {width:100%;font-family:Arial;font-size:13px;border:1px solid silver;}
 
-@font-face{font-family:'tdearial';src:url('TinyDiagramEditorArial.ttf');font-weight:normal;font-style:normal;}
+@font-face{font-family:'tdearial';src:url('TinyDiagramEditorNormal.ttf');font-weight:normal;font-style:normal;}
 @font-face{font-family:'tdearialblack';src:url('TinyDiagramEditorBlack.ttf');font-weight:800;color:red;font-style:normal;}
 @font-face{font-family:'tdearialnarrow';src:url('TinyDiagramEditorNarrow.ttf');font-weight:condensed;color:blue;font-style:normal;}
 
