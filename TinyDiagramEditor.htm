@@ -494,10 +494,13 @@
 							var inputHeight = document.getElementById("heightSize");
 							inputWidth.value = myCanvas.width;
 							inputHeight.value = myCanvas.height;
+
+							document.getElementById("fileOpener").value = null;
 							});
 						}
 						catch(err)
 						{
+						document.getElementById("fileOpener").value = null;
 						alert(STRING_ERROR_FORMAT);
 						}
 					}
