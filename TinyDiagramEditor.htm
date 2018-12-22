@@ -12,7 +12,7 @@
 				<div class="menubar_button_new_enabled" id="buttonNew" onclick="newDiagram();"></div>
 			</div>
 			<div class="menubar_holder">
-				<label for="fileOpener" id="buttonImport">
+				<label for="fileOpener" id="buttonImport" onclick="var executeOpenDiagram = false;if (sceneDirty==true){var message = confirm(STRING_ERROR_LOSECHANGES);if (message == true){executeOpenDiagram = true;}}else{executeOpenDiagram = true;}if (executeOpenDiagram==true){return true;}else{return false;}">
 					<span class="menubar_button_open_enabled">&nbsp;</span>
 				</label>
 				<input type="file" class="menubar_buttonHidden" id="fileOpener" onChange="openDiagram(document.getElementById('fileOpener').files[0]);">
@@ -58,117 +58,7 @@
 		</div>
 
 		<div id="right">
-			<div id="figures">
-				<script>
-					function buildPanel()
-						{
-						var firstPanel = true;
-
-						for(var setName in figureSets)
-							{
-							var set = figureSets[setName];
-							var eSetDiv = document.createElement("div");
-							eSetDiv.setAttribute("id", setName);
-							eSetDiv.style.marginBottom = "10px";
-							if(firstPanel)
-								{
-								firstPanel = false;
-								}
-								else
-								{
-								eSetDiv.style.display = "none";
-								}
-
-							document.getElementById("figures").appendChild(eSetDiv);
-
-							for(var figure in set["figures"])
-								{
-								figure = set["figures"][figure];
-
-								var figureFunctionName = "figure_" + figure.figureFunction;
-								var figureThumbURL = "lib/sets/" + setName + "/" + figure.image;
-
-								var eFigure = document.createElement("div");
-								eFigure.className = figure.figureFunction;
-
-								eFigure.addEventListener("mousedown", function (figureFunction, figureThumbURL)
-									{
-									return function(evt)
-										{
-										evt.preventDefault();
-
-										setUndo(true);
-
-										var myCanvas = document.getElementById("a");
-										var myContainer = document.getElementById("container");
-										var myMiddleXCanvas = (myCanvas.width / 2) + myCanvas.scrollLeft;
-										var myMiddleYCanvas = (myCanvas.height / 2) + myCanvas.scrollTop;
-										var myMiddleXContainer = (myContainer.offsetWidth / 2) + myContainer.scrollLeft;
-										var myMiddleYContainer = (myContainer.offsetHeight / 2) + myContainer.scrollTop;
-										var myMiddleX = 0;
-										var myMiddleY = 0;
-
-										if (myContainer.offsetHeight>=myCanvas.height && myContainer.offsetWidth>=myCanvas.width)
-											{
-											myMiddleX = myMiddleXCanvas;
-											myMiddleY = myMiddleYCanvas;
-											}
-										else if (myContainer.offsetWidth>=myCanvas.width)
-											{
-											myMiddleX = myMiddleXCanvas;
-											myMiddleY = myMiddleYContainer;
-											}
-										else if (myContainer.offsetHeight>=myCanvas.height)
-											{
-											myMiddleX = myMiddleXContainer;
-											myMiddleY = myMiddleYCanvas;
-											}
-											else
-											{
-											myMiddleX = myMiddleXContainer;
-											myMiddleY = myMiddleYContainer;
-											}
-
-										if (figureFunction=="figure_Arrow")
-											{
-											insertArrow(myMiddleX,myMiddleY);
-											}
-											else
-											{
-											var cmdCreateFig = new FigureCreateCommand(window[figureFunction], myMiddleX, myMiddleY);
-											cmdCreateFig.execute();
-											History.addUndo(cmdCreateFig);
-
-											selectedConnectorId = -1;
-
-											createFigureFunction = null;
-
-											mousePressed = false;
-											redraw = true;
-
-											state = STATE_FIGURE_SELECTED;
-
-											draw();
-
-											document.getElementById("buttonFront").classList.add("menubar_button_front_enabled");
-											document.getElementById("buttonFront").classList.remove("menubar_button_front_disabled");
-											document.getElementById("buttonBack").classList.add("menubar_button_back_enabled");
-											document.getElementById("buttonBack").classList.remove("menubar_button_back_disabled");
-											document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
-											document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
-											document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
-											document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
-											}
-										};
-									} (figureFunctionName, figureThumbURL), false);
-
-								eSetDiv.appendChild(eFigure);
-								}
-							}
-						}
-					buildPanel();
-				</script>
-			</div>
+			<div id="figures"></div>
 
 			<hr class="hr1"/>
 
@@ -223,7 +113,7 @@
 				STRING_BORDER_COLOR = "Color del borde:";
 				STRING_BORDER_WIDTH = "Ancho del borde:";
 				STRING_BORDER_STYLE = "Estilo del borde:";
-				STRING_ERROR_LOSECHANGES = "\u00BFPerder cualquier cambio no guardado?";
+				STRING_ERROR_LOSECHANGES = "\u00BFPerder cambios no guardados?";
 				STRING_ERROR_FORMAT = "ERROR: Por favor verifique que el archivo se encuentre en formato DGM.";
 				STRING_DELETE_WARNING = "\u00BFDesea eliminar la figura seleccionada?";
 				}
@@ -240,7 +130,7 @@
 				STRING_BORDER_COLOR = "Border color:";
 				STRING_BORDER_WIDTH = "Border width:";
 				STRING_BORDER_STYLE = "Border style:";
-				STRING_ERROR_LOSECHANGES = "Lose any unsaved changes?";
+				STRING_ERROR_LOSECHANGES = "Lose unsaved changes?";
 				STRING_ERROR_FORMAT = "ERROR: Please check that the file is in DGM format.";
 				STRING_DELETE_WARNING = "Delete the selected figure?";
 				}
@@ -248,6 +138,8 @@
 			document.getElementById("labelWidth").innerHTML = STRING_WIDTH;
 			document.getElementById("labelHeight").innerHTML = STRING_HEIGHT;
 			document.getElementById("sumbitSize").value = STRING_UPDATE;
+
+			var sceneDirty = false;
 
 			var sceneUndo01 = -1;
 			var sceneUndo02 = -1;
@@ -316,6 +208,8 @@
 
 					document.getElementById("buttonRedo").classList.add("menubar_button_redo_disabled");
 					document.getElementById("buttonRedo").classList.remove("menubar_button_redo_enabled");
+
+					sceneDirty = true;
 					}
 
 				document.getElementById("buttonUndo").classList.add("menubar_button_undo_enabled");
@@ -353,6 +247,8 @@
 
 				document.getElementById("buttonRedo").classList.add("menubar_button_redo_enabled");
 				document.getElementById("buttonRedo").classList.remove("menubar_button_redo_disabled");
+
+				sceneDirty = true;
 				}
 
 			function getUndo()
@@ -443,25 +339,132 @@
 					}
 				}
 
-			window.onload = function()
+			function buildFiguresPanel()
 				{
-				var myDiv = document.getElementById("container");
-				myDiv.scrollTop = 0;
-				myDiv.scrollLeft = 0;
+				var firstPanel = true;
 
-				init("");
+				for(var setName in figureSets)
+					{
+					var set = figureSets[setName];
+					var eSetDiv = document.createElement("div");
+					eSetDiv.setAttribute("id", setName);
+					eSetDiv.style.marginBottom = "10px";
+					if(firstPanel)
+						{
+						firstPanel = false;
+						}
+						else
+						{
+						eSetDiv.style.display = "none";
+						}
 
-				var myCanvas = document.getElementById("a");
-				var inputWidth = document.getElementById("widthSize");
-				var inputHeight = document.getElementById("heightSize");
-				inputWidth.value = myCanvas.width;
-				inputHeight.value = myCanvas.height;
+					document.getElementById("figures").appendChild(eSetDiv);
+
+					for(var figure in set["figures"])
+						{
+						figure = set["figures"][figure];
+
+						var figureFunctionName = "figure_" + figure.figureFunction;
+						var figureThumbURL = "lib/sets/" + setName + "/" + figure.image;
+
+						var eFigure = document.createElement("div");
+						eFigure.className = figure.figureFunction;
+
+						eFigure.addEventListener("mousedown", function (figureFunction, figureThumbURL)
+							{
+							return function(evt)
+								{
+								evt.preventDefault();
+
+								setUndo(true);
+								sceneDirty = true;
+
+								var myCanvas = document.getElementById("a");
+								var myContainer = document.getElementById("container");
+								var myMiddleXCanvas = (myCanvas.width / 2) + myCanvas.scrollLeft;
+								var myMiddleYCanvas = (myCanvas.height / 2) + myCanvas.scrollTop;
+								var myMiddleXContainer = (myContainer.offsetWidth / 2) + myContainer.scrollLeft;
+								var myMiddleYContainer = (myContainer.offsetHeight / 2) + myContainer.scrollTop;
+								var myMiddleX = 0;
+								var myMiddleY = 0;
+
+								if (myContainer.offsetHeight>=myCanvas.height && myContainer.offsetWidth>=myCanvas.width)
+									{
+									myMiddleX = myMiddleXCanvas;
+									myMiddleY = myMiddleYCanvas;
+									}
+								else if (myContainer.offsetWidth>=myCanvas.width)
+									{
+									myMiddleX = myMiddleXCanvas;
+									myMiddleY = myMiddleYContainer;
+									}
+								else if (myContainer.offsetHeight>=myCanvas.height)
+									{
+									myMiddleX = myMiddleXContainer;
+									myMiddleY = myMiddleYCanvas;
+									}
+									else
+									{
+									myMiddleX = myMiddleXContainer;
+									myMiddleY = myMiddleYContainer;
+									}
+
+								if (figureFunction=="figure_Arrow")
+									{
+									insertArrow(myMiddleX,myMiddleY);
+									}
+									else
+									{
+									var cmdCreateFig = new FigureCreateCommand(window[figureFunction], myMiddleX, myMiddleY);
+									cmdCreateFig.execute();
+									History.addUndo(cmdCreateFig);
+
+									selectedConnectorId = -1;
+
+									createFigureFunction = null;
+
+									mousePressed = false;
+									redraw = true;
+
+									state = STATE_FIGURE_SELECTED;
+
+									draw();
+
+									document.getElementById("buttonFront").classList.add("menubar_button_front_enabled");
+									document.getElementById("buttonFront").classList.remove("menubar_button_front_disabled");
+									document.getElementById("buttonBack").classList.add("menubar_button_back_enabled");
+									document.getElementById("buttonBack").classList.remove("menubar_button_back_disabled");
+									document.getElementById("buttonCopy").classList.add("menubar_button_copy_enabled");
+									document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
+									document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
+									document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+									}
+								};
+							} (figureFunctionName, figureThumbURL), false);
+
+						eSetDiv.appendChild(eFigure);
+						}
+					}
 				}
 
 			function newDiagram()
 				{
-				var message = confirm(STRING_ERROR_LOSECHANGES);
-				if (message == true)
+				var executeNewDiagram = false;
+
+				if (sceneDirty==true)
+					{
+					var message = confirm(STRING_ERROR_LOSECHANGES);
+					if (message == true)
+						{
+						executeNewDiagram = true;
+						}
+					}
+					else
+					{
+					executeNewDiagram = true;
+					}
+
+				if (executeNewDiagram==true)
 					{
 					newDiagramFile();
 					var myCanvas = document.getElementById("a");
@@ -469,6 +472,7 @@
 					var inputHeight = document.getElementById("heightSize");
 					inputWidth.value = myCanvas.width;
 					inputHeight.value = myCanvas.height;
+					sceneDirty = false;
 					}
 				}
 
@@ -496,6 +500,8 @@
 							inputHeight.value = myCanvas.height;
 
 							document.getElementById("fileOpener").value = null;
+
+							sceneDirty = false;
 							});
 						}
 						catch(err)
@@ -549,6 +555,8 @@
 				document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
 				document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
 				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+
+				sceneDirty = false;
 				}
 
 			function exportToPNG()
@@ -591,11 +599,14 @@
 				document.getElementById("buttonCopy").classList.remove("menubar_button_copy_enabled");
 				document.getElementById("buttonDelete").classList.add("menubar_button_trash_disabled");
 				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_enabled");
+
+				sceneDirty = false;
 				}
 
 			function resizeCanvas()
 				{
 				setUndo(true);
+				sceneDirty = true;
 
 				var inputWidth = document.getElementById("widthSize");
 				var inputHeight = document.getElementById("heightSize");
@@ -664,6 +675,23 @@
 				document.getElementById("buttonCopy").classList.remove("menubar_button_copy_disabled");
 				document.getElementById("buttonDelete").classList.add("menubar_button_trash_enabled");
 				document.getElementById("buttonDelete").classList.remove("menubar_button_trash_disabled");
+				}
+
+			window.onload = function()
+				{
+				var myDiv = document.getElementById("container");
+				myDiv.scrollTop = 0;
+				myDiv.scrollLeft = 0;
+
+				init("");
+
+				var myCanvas = document.getElementById("a");
+				var inputWidth = document.getElementById("widthSize");
+				var inputHeight = document.getElementById("heightSize");
+				inputWidth.value = myCanvas.width;
+				inputHeight.value = myCanvas.height;
+
+				buildFiguresPanel();
 				}
 		</script>
 	</body>
