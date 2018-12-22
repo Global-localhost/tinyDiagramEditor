@@ -15,7 +15,20 @@
   
   var selectorOwner;
   var selectorShowing = false;
-  
+
+  var userLanguage = window.navigator.userLanguage || window.navigator.language;
+
+  var STRING_COLOR_TRANSPARENT = "";
+
+  if (userLanguage.substring(0,2)=="es")
+    {
+    STRING_COLOR_TRANSPARENT = "Transparente";
+    }
+    else
+    {
+    STRING_COLOR_TRANSPARENT = "Transparent";
+    }
+
   buildPicker = function(element){
     //build color picker
     control = $("<div class='color_picker'>&nbsp;</div>")
@@ -48,7 +61,8 @@
      //add color pallete
      $.each($.fn.colorPicker.defaultColors, function(i){
       swatch = $("<div class='color_swatch'>&nbsp;</div>")
-      if(this[0] == 'n' && this[1] == '/' && this[2] == 'a' || this == "n/a"){//need both for all browser support
+      if(this[0] == 'n' && this[1] == '/' && this[2] == 'a' || this == STRING_COLOR_TRANSPARENT){//need both for all browser support
+      swatch.css("background-repeat","repeat-x");
       }
       else{
         swatch.css("background-color", "#" + this);
@@ -57,7 +71,7 @@
       swatch.bind("mouseover", function(e){ 
         $(this).css("border-color", "#598FEF");
         if($(this).css("background-repeat") == "repeat-x"){
-            $("input#color_value").val("n/a");
+            $("input#color_value").val(STRING_COLOR_TRANSPARENT);
         }
         else {
             $("input#color_value").val(toHex($(this).css("background-color")));
@@ -120,7 +134,14 @@
         });
     }
     hexColor = $(selectorOwner).prev("input").val();
-    $("input#color_value").val(hexColor);
+    if (hexColor!="")
+        {
+        $("input#color_value").val(hexColor);
+        }
+        else
+        {
+        $("input#color_value").val(STRING_COLOR_TRANSPARENT);
+        }
     selector.show();
     
     //bind close event handler
@@ -183,7 +204,7 @@
   };
   
   $.fn.colorPicker.defaultColors = 
-	[ '000000', '993300','333300', '000080', '333399', '333333', '800000', 'FF6600', '808000', '008000', '008080', '0000FF', '666699', '808080', 'FF0000', 'FF9900', '99CC00', '339966', '33CCCC', '3366FF', '800080', '999999', 'FF00FF', 'FFCC00', 'FFFF00', '00FF00', '00FFFF', '00CCFF', '993366', 'C0C0C0', 'FF99CC', 'FFCC99', 'FFFF99' , 'CCFFFF', 'FFFFFF', 'n/a'];
+	[ '000000', '993300','333300', '000080', '333399', '333333', '800000', 'FF6600', '808000', '008000', '008080', '0000FF', '666699', '808080', 'FF0000', 'FF9900', '99CC00', '339966', '33CCCC', '3366FF', '800080', '999999', 'FF00FF', 'FFCC00', 'FFFF00', '00FF00', '00FFFF', '00CCFF', '993366', 'C0C0C0', 'FF99CC', 'FFCC99', 'FFFF99' , 'CCFFFF', 'FFFFFF', STRING_COLOR_TRANSPARENT];
   
 })(jQuery);
 
