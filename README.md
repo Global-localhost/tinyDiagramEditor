@@ -3,6 +3,6 @@
 Pure HTML5 JavaScript Diagram / Flow Chart Editor with image support and loading and saving functions.
 
 ## Web
-https://tinydiagrameditor.lrusso.com.ar
+https://lrusso.github.io/TinyDiagramEditor/TinyDiagramEditor.htm
 
 ![alt screenshot](https://raw.githubusercontent.com/lrusso/TinyDiagramEditor/master/TinyDiagramEditor.png)
